@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:carease/Components/carease_colors.dart';
 
-class TextButtonBlue extends StatelessWidget {
+class TextButtonOrange extends StatelessWidget {
   final Function()? onTap;
   final String buttonText;
 
-  const TextButtonBlue({
+  const TextButtonOrange({
     super.key,
     required this.onTap,
     required this.buttonText,
@@ -21,13 +21,13 @@ class TextButtonBlue extends StatelessWidget {
         height: 50,
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [CareaseColors.blueLight, CareaseColors.blueDark],
+            colors: [CareaseColors.orangeLight, CareaseColors.orangeDark],
             begin: Alignment.topRight,
           ),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: CareaseColors.blueLight.withOpacity(0), // glow color
+              color: CareaseColors.orangeLight.withOpacity(0.2), // glow color
               blurRadius: 50,  // spread of the glow
               spreadRadius: 5, // intensity of glow
               offset: const Offset(0, 0), // no shadow offset (glow all around)

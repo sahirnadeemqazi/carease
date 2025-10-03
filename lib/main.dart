@@ -1,6 +1,8 @@
+import 'package:carease/Helpers/app_start.dart';
 import 'package:carease/Pages/welcome_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
 
@@ -22,13 +24,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Dose Wise',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
+      title: 'Carease',
+      theme: ThemeData.dark().copyWith(
+        iconTheme: const IconThemeData(color: Colors.white),
+        textTheme: ThemeData.dark().textTheme.apply(
+          //fontFamily: 'Poppins', // or 'Poppins' / 'SF-Pro'
+        ),
       ),
-      home: const WelcomePage(),
+      home: AppStart(),
     );
   }
 }

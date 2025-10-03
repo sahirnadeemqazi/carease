@@ -11,13 +11,15 @@ dependencies:
   flutter:
     sdk: flutter
 
-  cupertino_icons: ^1.0.8
   firebase_core: ^4.1.0
   firebase_auth: ^6.0.2
   cloud_firestore: ^6.0.1
   shared_preferences: ^2.2.2
   pin_code_fields: ^8.0.1
   flutter_launcher_icons: ^0.13.1
+  easy_radio: ^0.0.3
+  alert_info: ^0.0.6
+  ionicons: ^0.2.2
 
 dev_dependencies:
   flutter_test:
@@ -29,16 +31,13 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "lib/Images/app_icon_512.png"
+  image_path: "lib/Images/app_icon_1024.jpg"
 
 flutter:
-
   uses-material-design: true
   assets:
     - lib/Images/
     - Fonts/
-
-
   fonts:
     - family: MyFont
       fonts:
@@ -59,7 +58,3 @@ flutter:
         - asset: Fonts/sf_pro/SF-Pro-Rounded-Medium.otf
         - asset: Fonts/sf_pro/SF-Pro-Rounded-Regular.otf
         - asset: Fonts/sf_pro/SF-Pro-Rounded-Thin.otf
-
-
-
-
