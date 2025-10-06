@@ -1,7 +1,7 @@
 import 'package:carease/Components/custom_progress_indicator.dart';
 import 'package:carease/Components/text_button_orange.dart';
-import 'package:carease/Pages/user_home.dart';
-import 'package:carease/Pages/worker_home.dart';
+import 'package:carease/Pages/UserPages/user_home.dart';
+import 'package:carease/Pages/WorkerPages/worker_home.dart';
 import 'package:easy_radio/easy_radio.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,7 +23,7 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final nameController = TextEditingController();
   final phoneController = TextEditingController();
-  String category = "user"; // default
+  String category = "users"; // default
   String enteredOtp = "";
   bool otpSent = false;
   bool loading = false;
@@ -35,10 +35,10 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<bool> userAlreadyRegistered(String phone) async {
-    var userDoc =
-    await FirebaseFirestore.instance.collection('users').doc(phone).get();
+    var userDoc = await FirebaseFirestore.instance.collection('users').doc(phone).get();
+    var workerDoc = await FirebaseFirestore.instance.collection('workers').doc(phone).get();
 
-    if (userDoc.exists) {
+    if (userDoc.exists || workerDoc.exists) {
       return true;
     }
 
@@ -175,15 +175,12 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> _onRegisterSuccess(String phone, String name, String category) async {
-    await FirebaseFirestore.instance.collection('users').doc(phone).set({
+    await FirebaseFirestore.instance.collection(category).doc(phone).set({
       'name': name,
       'phone': phone,
-      'category': category,
     });
-
     setState(() => loading = false);
-
-    if (category == 'user') {
+    if(category == 'users') {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -192,7 +189,8 @@ class _RegisterPageState extends State<RegisterPage> {
           },
         ),
       );
-    } else {
+    }
+    else {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -242,12 +240,11 @@ class _RegisterPageState extends State<RegisterPage> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             const Text(
-                              "Enter your details to register",
+                              "Please provide the details to register",
                               style: TextStyle(
-                                color: CareaseColors.white,
-                                fontFamily: 'MyFont',
+                                color: CareaseColors.grey,
                                 fontWeight: FontWeight.w300,
-                                fontSize: 20,
+                                fontSize: 18,
                                 decoration: TextDecoration.none,
                               ),
                               textAlign: TextAlign.center,
@@ -274,12 +271,12 @@ class _RegisterPageState extends State<RegisterPage> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   EasyRadio<String>(
-                                    value: "user",
+                                    value: "users",
                                     radius: 10.0,
                                     dotRadius: 8.0,
-                                    activeBorderColor: CareaseColors.purple,
-                                    inactiveBorderColor: CareaseColors.purple,
-                                    dotColor: CareaseColors.blue,
+                                    activeBorderColor: CareaseColors.greyDark,
+                                    inactiveBorderColor: CareaseColors.greyDark,
+                                    dotColor: CareaseColors.orangeLight,
                                     dotStyle: DotStyle.check(),
                                     groupValue: category,
                                     onChanged: (value) {
@@ -292,8 +289,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   Text(
                                     "Looking for services.",
                                     style: TextStyle(
-                                      color: CareaseColors.white,
-                                      fontFamily: 'MyFont',
+                                      color: CareaseColors.greyDark,
                                       fontWeight: FontWeight.w300,
                                       fontSize: 16,
                                       decoration: TextDecoration.none,
@@ -310,12 +306,12 @@ class _RegisterPageState extends State<RegisterPage> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   EasyRadio<String>(
-                                    value: "worker",
+                                    value: "workers",
                                     radius: 10.0,
                                     dotRadius: 8.0,
-                                    activeBorderColor: CareaseColors.purple,
-                                    inactiveBorderColor: CareaseColors.purple,
-                                    dotColor: CareaseColors.blue,
+                                    activeBorderColor: CareaseColors.greyDark,
+                                    inactiveBorderColor: CareaseColors.greyDark,
+                                    dotColor: CareaseColors.orangeLight,
                                     dotStyle: DotStyle.check(),
                                     groupValue: category,
                                     onChanged: (value) {
@@ -328,8 +324,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   Text(
                                     "Want to provide a service.",
                                     style: TextStyle(
-                                      color: CareaseColors.white,
-                                      fontFamily: 'MyFont',
+                                      color: CareaseColors.greyDark,
                                       fontWeight: FontWeight.w300,
                                       fontSize: 16,
                                       decoration: TextDecoration.none,
@@ -348,12 +343,11 @@ class _RegisterPageState extends State<RegisterPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const Text(
-                              "Enter OTP",
+                              "Enter the code sent to your mobile number",
                               style: TextStyle(
-                                color: CareaseColors.white,
-                                fontFamily: 'MyFont',
+                                color: CareaseColors.grey,
                                 fontWeight: FontWeight.w300,
-                                fontSize: 20,
+                                fontSize: 18,
                                 decoration: TextDecoration.none,
                               ),
                               textAlign: TextAlign.center,
@@ -380,9 +374,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                   inactiveFillColor: Colors.transparent,
                                   activeFillColor: Colors.transparent,
                                   selectedFillColor: Colors.transparent,
-                                  inactiveColor: CareaseColors.purple,
-                                  selectedColor: CareaseColors.purple,
-                                  activeColor: CareaseColors.purple,
+                                  inactiveColor: CareaseColors.greyDark,
+                                  selectedColor: CareaseColors.greyDark,
+                                  activeColor: CareaseColors.greyDark,
                                 ),
                                 enableActiveFill: true,
                                 onChanged: (value) {
@@ -417,7 +411,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         buttonText: otpSent ? "Verify OTP" : "Sign Up",
                         onTap: otpSent ? verifyOtp : sendOtp,
                       ),
-                      const SizedBox(height: 25),
+                      const SizedBox(height: 15),
                       GestureDetector(
                         onTap: (){
                           Navigator.push(
@@ -432,9 +426,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         child: const Text(
                           "Already have an account? Login",
                           style: TextStyle(
-                            fontFamily: 'MyFont',
-                            color: CareaseColors.orangeDark,
-                            fontWeight: FontWeight.bold,
+                            color: CareaseColors.greyDark,
+                            fontWeight: FontWeight.normal,
                           ),
                         ),
                       ),

@@ -32,24 +32,25 @@ class InputField extends StatelessWidget {
             '+92',
             style: TextStyle(
               color: CareaseColors.white,
-              fontSize: 14,
+              fontSize: 16,
             ),
           ) : null,
           hintText: hintText,
           hintStyle: const TextStyle(
-            color: CareaseColors.orangeLight,
+            color: CareaseColors.greyDark,
             fontWeight: FontWeight.w300,
+            fontSize: 16,
           ),
           enabledBorder: const UnderlineInputBorder(
-            borderSide: BorderSide(color: CareaseColors.purple),
+            borderSide: BorderSide(color: CareaseColors.greyDark, width: 2),
           ),
           focusedBorder: const UnderlineInputBorder(
-            borderSide: BorderSide(color: CareaseColors.purple, width: 2),
+            borderSide: BorderSide(color: CareaseColors.orangeLight, width: 3),
           ),
           filled: true,
           fillColor: Colors.transparent,
         ),
-        style: const TextStyle(color: CareaseColors.white,fontSize: 14,),
+        style: const TextStyle(color: CareaseColors.white,fontSize: 16,),
       ),
     );
   }

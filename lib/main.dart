@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark().copyWith(
         iconTheme: const IconThemeData(color: Colors.white),
         textTheme: ThemeData.dark().textTheme.apply(
-          //fontFamily: 'Poppins', // or 'Poppins' / 'SF-Pro'
+          fontFamily: 'SF-Pro', // 👈 add here instead
         ),
       ),
       home: AppStart(),

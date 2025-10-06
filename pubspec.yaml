@@ -20,6 +20,12 @@ dependencies:
   easy_radio: ^0.0.3
   alert_info: ^0.0.6
   ionicons: ^0.2.2
+  crystal_navigation_bar: ^1.0.4
+  searchfield: ^1.1.0
+  geolocator: ^13.0.1
+  geocoding: ^3.0.0
+  google_maps_flutter: ^2.6.1
+
 
 dev_dependencies:
   flutter_test:
@@ -58,3 +64,8 @@ flutter:
         - asset: Fonts/sf_pro/SF-Pro-Rounded-Medium.otf
         - asset: Fonts/sf_pro/SF-Pro-Rounded-Regular.otf
         - asset: Fonts/sf_pro/SF-Pro-Rounded-Thin.otf
+
+    - family: TallNumbers
+      fonts:
+        - asset: Fonts/league_gothic/leaguegothic-condensed-regular-webfont.ttf
+        - asset: Fonts/league_gothic/leaguegothic-regular-webfont.ttf

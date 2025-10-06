@@ -39,9 +39,8 @@ class TextButtonOrange extends StatelessWidget {
             buttonText,
             style: const TextStyle(
               color: Colors.white,
-              fontFamily: 'MyFont',
-              fontWeight: FontWeight.normal,
-              fontSize: 22,
+              fontWeight: FontWeight.w300,
+              fontSize: 20,
               decoration: TextDecoration.none,
             ),
           ),

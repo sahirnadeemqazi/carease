@@ -3,8 +3,8 @@ import 'package:carease/Components/carease_colors.dart';
 import 'package:carease/Components/custom_progress_indicator.dart';
 import 'package:carease/Components/text_button_orange.dart';
 import 'package:carease/Pages/register_page.dart';
-import 'package:carease/Pages/user_home.dart';
-import 'package:carease/Pages/worker_home.dart';
+import 'package:carease/Pages/UserPages/user_home.dart';
+import 'package:carease/Pages/WorkerPages/worker_home.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ionicons/ionicons.dart';
@@ -53,8 +53,10 @@ class _LoginPageState extends State<LoginPage> {
 
     var userDoc =
     await FirebaseFirestore.instance.collection('users').doc(phone).get();
+    var workerDoc =
+    await FirebaseFirestore.instance.collection('workers').doc(phone).get();
 
-    if (!userDoc.exists) {
+    if (!userDoc.exists && !workerDoc.exists) {
       AlertInfo.show(
         context: context,
         text: "Phone # not registered, Please signup",
@@ -140,12 +142,7 @@ class _LoginPageState extends State<LoginPage> {
 
       await FirebaseAuth.instance.signInWithCredential(credential);
 
-      var userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(phoneController.text.trim())
-          .get();
-
-      String category = userDoc['category']; // 'user' or 'worker'
+      String category = await checkCategory(phoneController.text.trim());
       _onLoginSuccess(category, phoneController.text.trim());
     } catch (e) {
       AlertInfo.show(
@@ -158,6 +155,17 @@ class _LoginPageState extends State<LoginPage> {
       );
       setState(() => loading = false);
     }
+  }
+
+  Future<String> checkCategory(String phone) async{
+    var userDoc =
+    await FirebaseFirestore.instance.collection('users').doc(phone).get();
+
+    if(userDoc.exists) {
+        return 'user';
+      }
+
+      return 'worker';
   }
 
   Future<void> _onLoginSuccess(String category, String phone) async {
@@ -211,6 +219,7 @@ class _LoginPageState extends State<LoginPage> {
                   width: MediaQuery.of(context).size.width * 1,
                   color: Colors.transparent,
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Image.asset('lib/Images/logo_512.png',width: 250,)]
                   ),
@@ -225,18 +234,18 @@ class _LoginPageState extends State<LoginPage> {
                       Expanded(
                         flex: 1,
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
                               "Enter your number to login",
                               style: TextStyle(
-                                color: CareaseColors.white,
-                                fontFamily: 'MyFont',
+                                color: CareaseColors.grey,
                                 fontWeight: FontWeight.w300,
-                                fontSize: 20,
+                                fontSize: 18,
                                 decoration: TextDecoration.none,
                               ),
                             ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 10),
                             InputField(
                               controller: phoneController,
                               hintText: '3xxxxxxxxx',
@@ -247,8 +256,11 @@ class _LoginPageState extends State<LoginPage> {
                             Row(
                               children: [
                                 Checkbox(
+                                  checkColor: CareaseColors.white,
+                                  hoverColor: CareaseColors.blue,
+                                  //fillColor: MaterialStateProperty.all(CareaseColors.orangeLight),
                                   value: rememberMe,
-                                  activeColor: CareaseColors.purple,
+                                  activeColor: CareaseColors.orangeLight,
                                   onChanged: (value) {
                                     setState(() => rememberMe = value ?? false);
                                   },
@@ -256,8 +268,7 @@ class _LoginPageState extends State<LoginPage> {
                                 const Text(
                                   "Remember me",
                                   style: TextStyle(
-                                    color: CareaseColors.white,
-                                    fontFamily: 'MyFont',
+                                    color: CareaseColors.greyDark,
                                     fontSize: 16,
                                   ),
                                 ),
@@ -273,12 +284,11 @@ class _LoginPageState extends State<LoginPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "Enter OTP",
+                              "Enter the code sent to your mobile number",
                               style: TextStyle(
-                                color: CareaseColors.white,
-                                fontFamily: 'MyFont',
+                                color: CareaseColors.grey,
                                 fontWeight: FontWeight.w300,
-                                fontSize: 20,
+                                fontSize: 18,
                                 decoration: TextDecoration.none,
                               ),
                             ),
@@ -304,9 +314,9 @@ class _LoginPageState extends State<LoginPage> {
                                   inactiveFillColor: Colors.transparent,
                                   activeFillColor: Colors.transparent,
                                   selectedFillColor: Colors.transparent,
-                                  inactiveColor: CareaseColors.purple,
-                                  selectedColor: CareaseColors.purple,
-                                  activeColor: CareaseColors.purple,
+                                  inactiveColor: CareaseColors.grey,
+                                  selectedColor: CareaseColors.grey,
+                                  activeColor: CareaseColors.grey,
                                 ),
                                 enableActiveFill: true,
                                 onChanged: (value) {
@@ -341,7 +351,7 @@ class _LoginPageState extends State<LoginPage> {
                         buttonText: otpSent ? "Verify OTP" : "Continue",
                         onTap: otpSent ? verifyOtp : sendOtp,
                       ),
-                      const SizedBox(height: 25),
+                      const SizedBox(height: 15),
                       GestureDetector(
                         onTap: (){
                           Navigator.push(
@@ -356,9 +366,8 @@ class _LoginPageState extends State<LoginPage> {
                         child: const Text(
                           "Don’t have an account? Sign up",
                           style: TextStyle(
-                            fontFamily: 'MyFont',
-                            color: CareaseColors.orangeDark,
-                            fontWeight: FontWeight.bold,
+                            color: CareaseColors.greyDark,
+                            fontWeight: FontWeight.normal,
                           ),
                         ),
                       ),

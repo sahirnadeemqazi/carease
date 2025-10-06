@@ -69,11 +69,11 @@ class _WelcomePageState extends State<WelcomePage> {
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20),
                         child: Text(
-                          "Your trusted partner for car care.",
+                          "Your trusted partner for car care",
                           style: TextStyle(
-                            color: CareaseColors.purple,
-                            fontFamily: "MyFont",
-                            fontSize: 22,
+                            color: CareaseColors.grey,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500
                           ),
                         ),
                       ),
@@ -83,9 +83,9 @@ class _WelcomePageState extends State<WelcomePage> {
                         child: Text(
                           "Find skilled mechanics, electricians, and specialists all in one place. Whether it’s quick fixes, regular maintenance, or expert advice, Carease connects you with the right hands to keep your car running smooth.",
                           style: TextStyle(
-                            color: CareaseColors.white,
-                            fontFamily: "MyFont",
-                            fontSize: 18,
+                            color: CareaseColors.greyDark,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w300
                           ),
                           textAlign: TextAlign.justify,
                         ),

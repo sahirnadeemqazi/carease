@@ -12,9 +12,11 @@ class CareaseColors {
   static const Color orangeDark = Color(0xFFe06a38);
 
   static const Color white = Color(0xFFffffff);
+  static const Color grey = Colors.white70;
+  static const Color greyDark = Colors.white38;
 
   // Neutral/backgrounds
-  static const Color backgroundLight = Color(0xFF181818);
+  static const Color backgroundLight = Color(0xFF191919);
   static const Color backgroundDark = Color(0xFF1a242d);
 
   static const RadialGradient radialGradient = RadialGradient(

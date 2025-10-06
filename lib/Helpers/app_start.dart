@@ -1,7 +1,7 @@
 import 'package:carease/Components/custom_progress_indicator.dart';
 import 'package:carease/Pages/login_page.dart';
 import 'package:carease/Pages/register_page.dart';
-import 'package:carease/Pages/user_home.dart';
+import 'package:carease/Pages/UserPages/user_home.dart';
 import 'package:carease/Pages/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
