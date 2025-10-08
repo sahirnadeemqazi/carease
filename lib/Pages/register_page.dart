@@ -1,5 +1,6 @@
 import 'package:carease/Components/custom_progress_indicator.dart';
 import 'package:carease/Components/text_button_orange.dart';
+import 'package:carease/Database/user_details.dart';
 import 'package:carease/Pages/UserPages/user_home.dart';
 import 'package:carease/Pages/WorkerPages/worker_home.dart';
 import 'package:easy_radio/easy_radio.dart';
@@ -11,6 +12,7 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:alert_info/alert_info.dart';
 import '../Components/carease_colors.dart';
 import '../Components/input_field.dart';
+import '../Database/worker_details.dart';
 import 'login_page.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -175,12 +177,15 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> _onRegisterSuccess(String phone, String name, String category) async {
-    await FirebaseFirestore.instance.collection(category).doc(phone).set({
-      'name': name,
-      'phone': phone,
-    });
-    setState(() => loading = false);
     if(category == 'users') {
+      UserData.instance.currentUser.name = name;
+      UserData.instance.currentUser.phoneNumber = phone;
+      UserData.instance.currentUser.location = GeoPoint(0, 0);
+
+      await UserData.instance.uploadUserDetails(phone);
+
+      setState(() => loading = false);
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -191,7 +196,12 @@ class _RegisterPageState extends State<RegisterPage> {
       );
     }
     else {
-      Navigator.pushReplacement(
+      // update firestore with worker details
+
+        setState(() => loading = false);
+
+
+        Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) {

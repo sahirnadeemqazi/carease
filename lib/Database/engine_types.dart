@@ -1,0 +1,3 @@
+class EngineTypes {
+  String? engineType;
+}

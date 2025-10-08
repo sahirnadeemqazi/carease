@@ -79,17 +79,16 @@ class _SearchServicesState extends State<SearchServices> {
         child: Column(
             children: [
               const Text(
-                "AI Suggestions",
+                "Search Page",
                 style: TextStyle(
-                  color: Colors.blueGrey,
-                  fontSize: 30,
+                  color: CareaseColors.greyDark,
+                  fontSize: 24,
                 ),
               ),
               const SizedBox(height: 20,),
-
             ]
         ),
-      );
+        );
         },
     );
   }
