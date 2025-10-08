@@ -6,6 +6,10 @@ import 'package:carease/Pages/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Database/user_details.dart';
+import '../Database/worker_details.dart';
+import '../Pages/WorkerPages/worker_home.dart';
+
 class AppStart extends StatefulWidget {
   @override
   _AppStartState createState() => _AppStartState();
@@ -19,6 +23,38 @@ class _AppStartState extends State<AppStart> {
   void initState() {
     super.initState();
     _checkFirstRun();
+    _checkRememberMe();
+  }
+
+  Future<void> _checkRememberMe() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? rememberMe = prefs.getBool('rememberMe');
+
+    if(rememberMe == true){
+      String? phoneNumber = prefs.getString('phoneNumber');
+      if(prefs.getString('role') == 'user'){
+        UserData.instance.currentUser.phoneNumber = phoneNumber!;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return const UserHome();
+            },
+          ),
+        );
+      }
+      else{
+        WorkerData.instance.currentWorker.phoneNumber = phoneNumber!;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return const WorkerHome();
+            },
+          ),
+        );
+      }
+    }
   }
 
   Future<void> _checkFirstRun() async {
@@ -37,7 +73,7 @@ class _AppStartState extends State<AppStart> {
       return Scaffold(body: Center(child: CustomProgressIndicator(imagePath: 'lib/Images/loading_gear.png',)));
     }
 
-    return UserHome();
+    //return UserHome();
     return _showWelcome ? WelcomePage() : LoginPage();
   }
 }

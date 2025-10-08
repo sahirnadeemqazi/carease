@@ -32,8 +32,8 @@ class WorkerData{
 
   WorkerData._internal();
 
-  Future<void> uploadWorkerDetails(String phoneNumber) async {
-    await _firestore.collection('users').doc(phoneNumber).set({
+  Future<void> uploadWorkerDetails() async {
+    await _firestore.collection('workers').doc(currentWorker.phoneNumber).set({
       'name': currentWorker.name,
       'phoneNumber': currentWorker.phoneNumber,
       'shopName' : currentWorker.shopName,
@@ -42,5 +42,9 @@ class WorkerData{
       'shopCloseTime' : currentWorker.shopCloseTime,
       'workingDays' : currentWorker.workingDays,
     });
+  }
+
+  Future<void> fetchWorkerDetails() async{
+
   }
 }

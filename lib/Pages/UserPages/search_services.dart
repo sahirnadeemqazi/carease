@@ -1,6 +1,8 @@
 import 'package:carease/Components/carease_colors.dart';
 import 'package:carease/Components/custom_progress_indicator.dart';
 import 'package:carease/Components/text_button_orange.dart';
+import 'package:carease/Database/user_details.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -20,11 +22,30 @@ class SearchServices extends StatefulWidget {
 
 class _SearchServicesState extends State<SearchServices> {
   String? _currentAddress;
+  bool _loading = true;
 
   @override
   void initState() {
     super.initState();
+    getUserDetails();
     _loadSavedLocation();
+  }
+
+  Future<void> getUserDetails()async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? phoneNumber = prefs.getString('phoneNumber');
+
+    if (phoneNumber != null) {
+      UserData.instance.currentUser.phoneNumber = phoneNumber;
+      await UserData.instance.fetchUserDetails();
+
+      // ✅ Check if the widget is still mounted before calling setState
+      if (!mounted) return;
+
+      setState(() {
+        _loading = false;
+      });
+    }
   }
 
   Future<void> _loadSavedLocation() async {
@@ -32,7 +53,6 @@ class _SearchServicesState extends State<SearchServices> {
     String? savedLocation = prefs.getString('user_location');
 
     if (savedLocation == null) {
-      // Show location selector when user opens app for the first time
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _openLocationSelector();
       });
@@ -51,6 +71,11 @@ class _SearchServicesState extends State<SearchServices> {
     });
   }
 
+  Future<void> updateUserLocaiton()async{
+    print(UserData.instance.currentUser.location.latitude);
+    await UserData.instance.updateUserLocation(UserData.instance.currentUser.location);
+  }
+
   void _openLocationSelector() {
     showModalBottomSheet(
       context: context,
@@ -63,6 +88,7 @@ class _SearchServicesState extends State<SearchServices> {
         return LocationSelectionSheet(onLocationSelected: (address) {
           Navigator.pop(context);
           _saveLocation(address);
+          updateUserLocaiton();
         });
       },
     );
@@ -100,9 +126,23 @@ class _SearchServicesState extends State<SearchServices> {
 
   @override
   Widget build(BuildContext context) {
+    String getGreeting() {
+      int hour = DateTime.now().hour;
+
+      if (hour < 12) {
+        return "Good Morning";
+      } else if (hour < 17) {
+        return "Good Afternoon";
+      } else if (hour < 20) {
+        return "Good Evening";
+      } else {
+        return "Good Night";
+      }
+    }
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: SingleChildScrollView(
+      body: !_loading ?
+      SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 25,vertical: 40),
           child: Column(
@@ -151,14 +191,14 @@ class _SearchServicesState extends State<SearchServices> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Welcome,',
+                    getGreeting(),
                     style: TextStyle(
                       color: CareaseColors.greyDark,
                       fontSize: 14,
                     ),
                   ),
                   Text(
-                    'Sahir Nadeem',
+                    UserData.instance.currentUser.name,
                     style: TextStyle(
                       color: CareaseColors.white,
                       fontSize: 28,
@@ -381,11 +421,12 @@ class _SearchServicesState extends State<SearchServices> {
             ],
           ),
         ),
+      ) : Container(
+        child: CustomProgressIndicator(imagePath: 'lib/Images/loading_gear.png', size: 50,),
       ),
     );
   }
 }
-
 
 class LocationSelectionSheet extends StatefulWidget {
   final Function(String) onLocationSelected;
@@ -407,6 +448,8 @@ class _LocationSelectionSheetState extends State<LocationSelectionSheet> {
       desiredAccuracy: LocationAccuracy.high,
     );
     _selectedPosition = LatLng(position.latitude, position.longitude);
+    print(_selectedPosition);
+    //UserData.instance.currentUser.location = GeoPoint(position.latitude,position.longitude);
 
     List<Placemark> placemarks = await placemarkFromCoordinates(
       position.latitude,

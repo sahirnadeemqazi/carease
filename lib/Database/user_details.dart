@@ -6,9 +6,9 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
 class UserDetails {
-  String? name;
-  String? phoneNumber;
-  GeoPoint? location;
+  String name = '';
+  String phoneNumber = '';
+  GeoPoint location = GeoPoint(0, 0);
 }
 
 class UserData{
@@ -21,21 +21,21 @@ class UserData{
 
   UserData._internal();
 
-  Future<void> uploadUserDetails(String phoneNumber) async {
-    await _firestore.collection('users').doc(phoneNumber).set({
+  Future<void> uploadUserDetails() async {
+    await _firestore.collection('users').doc(currentUser.phoneNumber).set({
       'name': currentUser.name,
       'phoneNumber': currentUser.phoneNumber,
       'location' : currentUser.location,
     });
   }
 
-  Future<void> fetchUserDetails(String phoneNumber) async {
+  Future<void> fetchUserDetails() async {
     User? user = _auth.currentUser;
 
     if (user != null) {
       DocumentSnapshot userDoc = await _firestore
           .collection('users')
-          .doc(phoneNumber)
+          .doc(currentUser.phoneNumber)
           .get();
 
       if (userDoc.exists) {
@@ -44,5 +44,11 @@ class UserData{
         currentUser.location = userDoc['location'];
       }
     }
+  }
+
+  Future<void> updateUserLocation(GeoPoint location) async {
+    await _firestore.collection('users').doc(currentUser.phoneNumber).update({
+      'Location' : location,
+    });
   }
 }

@@ -182,7 +182,7 @@ class _RegisterPageState extends State<RegisterPage> {
       UserData.instance.currentUser.phoneNumber = phone;
       UserData.instance.currentUser.location = GeoPoint(0, 0);
 
-      await UserData.instance.uploadUserDetails(phone);
+      await UserData.instance.uploadUserDetails();
 
       setState(() => loading = false);
 

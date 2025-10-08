@@ -1,7 +1,11 @@
+import 'dart:ffi';
+
 import 'package:alert_info/alert_info.dart';
 import 'package:carease/Components/carease_colors.dart';
 import 'package:carease/Components/custom_progress_indicator.dart';
 import 'package:carease/Components/text_button_orange.dart';
+import 'package:carease/Database/user_details.dart';
+import 'package:carease/Database/worker_details.dart';
 import 'package:carease/Pages/register_page.dart';
 import 'package:carease/Pages/UserPages/user_home.dart';
 import 'package:carease/Pages/WorkerPages/worker_home.dart';
@@ -29,6 +33,42 @@ class _LoginPageState extends State<LoginPage> {
   bool loading = false;
   String verificationId = "";
 
+  @override
+  void initState() {
+    super.initState();
+    checkRememberMe();
+  }
+
+  Future<void> checkRememberMe() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? rememberMe = prefs.getBool('rememberMe');
+
+    if(rememberMe == true){
+      String? phoneNumber = prefs.getString('phoneNumber');
+      if(prefs.getString('role') == 'user'){
+        UserData.instance.currentUser.phoneNumber = phoneNumber!;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return const UserHome();
+            },
+          ),
+        );
+      }
+      else{
+        WorkerData.instance.currentWorker.phoneNumber = phoneNumber!;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return const WorkerHome();
+            },
+          ),
+        );
+      }
+    }
+  }
 
   bool isValidPhone(String phone) {
     final regex = RegExp(r'^\d{10}$'); // Pakistan 10-digit format
@@ -162,10 +202,14 @@ class _LoginPageState extends State<LoginPage> {
     await FirebaseFirestore.instance.collection('users').doc(phone).get();
 
     if(userDoc.exists) {
+      UserData.instance.currentUser.phoneNumber = phone;
+      UserData.instance.fetchUserDetails();
         return 'user';
       }
 
-      return 'worker';
+    WorkerData.instance.currentWorker.phoneNumber = phone;
+    WorkerData.instance.fetchWorkerDetails();
+    return 'worker';
   }
 
   Future<void> _onLoginSuccess(String category, String phone) async {
